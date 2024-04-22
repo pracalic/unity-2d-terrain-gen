@@ -4,13 +4,13 @@ using UnityEditor;
 using UnityEngine.Tilemaps;
 
 [CustomEditor(typeof(TerrainTileGenerator))]
-public class LevelScriptEditor : Editor
+public class TerrainTileGeneratorEditor : Editor
 {
 
     //[SerializeField]
     //GridPalette gridPallete;
-    //[SerializeField]
-    //Tilemap tileMap;
+    [SerializeField]
+    Tilemap tileMap;
 
 
     //[SerializeField]
