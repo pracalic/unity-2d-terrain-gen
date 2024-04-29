@@ -1,41 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TerrainTileGenerator : MonoBehaviour
 {
-    public int sizeX = 100, sizeY = 100;
-    public bool startFromCenter = false;
-    Vector3Int startPos = Vector3Int.zero;
-    public ScriptableObject sO;
-    // public Tilemap tileMap;
-    //public GridPalette gridPallete;
     [SerializeField]
     TerrainTileGeneratorAssets tTGA;
+    private Vector3Int startPos;
 
-    [SerializeField]
-    GridPalette gridPallete;
-    [SerializeField]
-    public Tilemap tileMap;
 
-    // Start is called before the first frame update
-    void Start()
+    void DrawTileOnTilemap(TileBase tb, Tilemap tm, Vector3Int pos)
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void DrawTerrain(Tilemap tm, TileBase tb)
-    {
-        tm.SetTile(new Vector3Int(0, 0), tb);
-        tm.SetTile(new Vector3Int(0, 0), tb);
+        tm.SetTile(pos, tb);
     }
 
     void AsignnTerrainTileGeneratorAssets()
@@ -49,13 +24,15 @@ public class TerrainTileGenerator : MonoBehaviour
         AsignnTerrainTileGeneratorAssets();
         tTGA.tileMap.ClearAllTiles();
         tTGA.colliderTileMap.ClearAllTiles();
+        tTGA.seaTileMap.ClearAllTiles();
+        tTGA.tileMapBorders.ClearAllTiles();
     }
 
     public void DrawTerrain()
     {
         ClearTerrain();
 
-        if (!startFromCenter)
+        if (!tTGA.startFromCenter)
         {
             startPos.x = -tTGA.width / 2;
             startPos.y = -tTGA.height / 2;
@@ -65,24 +42,14 @@ public class TerrainTileGenerator : MonoBehaviour
             startPos.x = startPos.y = 0;
         }
 
-        //Debug.Log("Rysuje na " + startPos);
-        //if (tTGA.genType == TERRAIN_GEN_TYPE.SIMPLE_RECT)
-        //{
-        //    for (int i = 0; i < tTGA.width; i++)
-        //    {
-        //        for (int j = 0; j < tTGA.height; j++)
-        //        {
-        //            tTGA.tileMap.SetTile(startPos + new Vector3Int(i, j), tTGA.tileBase[GetRandomBaseTile()]);
-        //        }
-        //    }
-        //}
-
         switch (tTGA.genType)
         {
             case TERRAIN_GEN_TYPE.SIMPLE_RECT:
                 {
                     SimpleRectGeneration();
-                    SimpleFenceGenerator();
+                    if(tTGA.fenceGeneration)    
+                        SimpleFenceGenerator();
+                    GenerateSeaAround();
                     break;
                 }
             case TERRAIN_GEN_TYPE.ADVANCE_RECT:
@@ -107,17 +74,70 @@ public class TerrainTileGenerator : MonoBehaviour
 
         }
 
-        // tTGA.tileMap.SetTile(startPos, tTGA.tileBase[1]);
-
     }
 
+
+    bool SimpleCorenrsGenerator(int i, int j)
+    {
+        int ind = -1;
+        if (i == 0 && j == 0)
+            ind = tTGA.cornerGrassTilesIndexes[2];
+
+        if (i == tTGA.width - 1 && j == 0)
+            ind = tTGA.cornerGrassTilesIndexes[3];
+
+        if (i == tTGA.width - 1 && j == tTGA.height - 1)
+            ind = tTGA.cornerGrassTilesIndexes[1];
+
+        if (i == 0 && j == tTGA.height - 1)
+            ind = tTGA.cornerGrassTilesIndexes[0];
+
+        if (ind >= 0)
+        {
+            DrawTileOnTilemap(tTGA.tileBase[ind], tTGA.tileMapBorders, startPos + new Vector3Int(i, j));
+            return true;
+        }
+        return false;
+    }
+
+
+    bool SimpleSideGenerator(int i, int j)
+    {
+        int ind = -1;
+        if (i == 0 && j > 0)
+            ind = tTGA.sideGrassTilesIndexes[3];
+
+        if (i > 0 && j == 0)
+            ind = tTGA.sideGrassTilesIndexes[2];
+
+        if (i > 0 && j == tTGA.height - 1)
+            ind = tTGA.sideGrassTilesIndexes[0];
+
+        if (i == tTGA.width - 1 && j > 0)
+            ind = tTGA.sideGrassTilesIndexes[1];
+
+        if (ind >= 0)
+        {
+            DrawTileOnTilemap(tTGA.tileBase[ind], tTGA.tileMapBorders, startPos + new Vector3Int(i, j));
+            return true;
+        }
+    
+        return false;
+    }
     void SimpleRectGeneration()
     {
         for (int i = 0; i < tTGA.width; i++)
         {
             for (int j = 0; j < tTGA.height; j++)
             {
-                tTGA.tileMap.SetTile(startPos + new Vector3Int(i, j), tTGA.tileBase[GetRandomBaseTile()]);
+
+                if (SimpleCorenrsGenerator(i,j))
+                    continue;
+
+                if(SimpleSideGenerator(i,j))
+                    continue;
+
+                DrawTileOnTilemap(tTGA.tileBase[GetRandomBaseTile()], tTGA.tileMap, startPos + new Vector3Int(i, j));
             }
         }
     }
@@ -126,13 +146,34 @@ public class TerrainTileGenerator : MonoBehaviour
     {
         for (int i = 0; i < tTGA.width; i++)
         {
-           // if (i == 0 || i ==tTGA.width-1)
             for (int j = 0; j < tTGA.height; j++)
             {
-                tTGA.colliderTileMap.SetTile(startPos + new Vector3Int(i, j), GetFenceTile(i,j));
+                DrawTileOnTilemap(GetFenceTile(i, j), tTGA.colliderTileMap, startPos + new Vector3Int(i, j));
             }
         }
+    }
 
+    void GenerateSeaAround()
+    {
+        int generationMultiplier = 4;
+        for (int i = 0; i < tTGA.width* generationMultiplier; i++)
+            for (int j = 0; j < tTGA.height* generationMultiplier; j++)
+            {
+                
+                Vector3Int start = startPos;
+                if (start == Vector3Int.zero)
+                    start -= new Vector3Int(tTGA.width *generationMultiplier/ 2 - tTGA.width/2, tTGA.height * generationMultiplier/2 - tTGA.height/2);
+                else
+                    start *= generationMultiplier;
+
+                Vector3Int to = start + new Vector3Int(i, j);
+                DrawTileOnTilemap(GetSeaTile(), tTGA.seaTileMap, to);
+            }
+    }
+
+    TileBase GetSeaTile()
+    {
+        return tTGA.seaTileBase[Random.Range(0, tTGA.seaTileBase.Length)];
     }
 
     TileBase GetFenceTile(int i, int j)
