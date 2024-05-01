@@ -22,10 +22,21 @@ public class TerrainTileGenerator : MonoBehaviour
     public void ClearTerrain()
     {
         AsignnTerrainTileGeneratorAssets();
+        int childCount = tTGA.obstacleParent.childCount;
+        GameObject[] obToDestroy = new GameObject[childCount];
+        for (int i = 0; i < childCount; i++)
+        {
+            obToDestroy[i] = tTGA.obstacleParent.GetChild(i).gameObject;
+        }
+        for (int i = 0; i<obToDestroy.Length; i++)
+        {
+            DestroyImmediate(obToDestroy[i]);
+        }
         tTGA.tileMap.ClearAllTiles();
         tTGA.colliderTileMap.ClearAllTiles();
         tTGA.seaTileMap.ClearAllTiles();
         tTGA.tileMapBorders.ClearAllTiles();
+
     }
 
     public void DrawTerrain()
@@ -50,6 +61,7 @@ public class TerrainTileGenerator : MonoBehaviour
                     if(tTGA.fenceGeneration)    
                         SimpleFenceGenerator();
                     GenerateSeaAround();
+                    GenerateObstacles();
                     break;
                 }
             case TERRAIN_GEN_TYPE.ADVANCE_RECT:
@@ -203,5 +215,111 @@ public class TerrainTileGenerator : MonoBehaviour
         else
             return tTGA.tileBaseIndex;
     }
-    
+
+
+    void GenerateObstacles()
+    {
+        if (tTGA.width >= 3 && tTGA.height >= 3)
+        {
+            int howMany = (int)Mathf.Floor(tTGA.width * tTGA.height * tTGA.obstaclesOnMap);
+            Debug.Log(howMany);
+            int[] randomPlaces;
+            ObstacleObiect[] randObstacles = new ObstacleObiect[howMany];
+            randomPlaces = new int[howMany];
+            bool[] drawItem = new bool[howMany];
+            for (int i = 0; i < howMany; i++)
+            {
+                int randWidth = Random.Range(1, tTGA.width);
+                int randHeight = Random.Range(1, tTGA.height);
+
+               // Debug.Log(randWidth + "   " + randHeight);
+                randomPlaces[i] = randWidth + randHeight*tTGA.width;
+               // Debug.Log(randomPlaces[i]);
+                randObstacles[i] = tTGA.obstaleObiect[Random.Range(0, tTGA.obstaleObiect.Length)];
+                drawItem[i] = true;
+            }
+
+           
+
+            for (int i = 0; i < howMany; i++)
+            {
+                for (int j = 1; j < howMany; j++)
+                {
+                    if (i != j && drawItem[i] && drawItem[j])
+                    {
+                        if (randomPlaces[i] == randomPlaces[j])
+                        {
+                            drawItem[j] = false;
+                        }
+
+                        if(drawItem[j]==true)
+                        if (randObstacles[i].size > 0 || randObstacles[j].size > 0)
+                        {
+                           Vector2 pos1 = new Vector2(randomPlaces[i]%tTGA.width, Mathf.Floor(randomPlaces[i]/tTGA.width));
+                            Vector2 pos2 = new Vector2(randomPlaces[j] % tTGA.width, Mathf.Floor(randomPlaces[j] / tTGA.width));
+
+                                //Debug.Log(pos1 +"   " + pos2);
+                                bool draw = true;
+                            if (pos1.x < pos2.x)
+                            {
+                                   
+                                    if (pos1.x + randObstacles[i].size >= pos2.x - randObstacles[j].size)
+                                    {
+                                        if (pos1.y < pos2.y)
+                                        {
+                                            if (pos1.y + randObstacles[i].size >= pos2.y - randObstacles[j].size)
+                                                draw = false;
+                                        }
+                                        else
+                                        {
+                                            if (pos2.y + randObstacles[j].size >= pos1.y - randObstacles[i].size)
+                                                draw = false;
+                                        }
+                                    }
+                                    drawItem[j] = draw;
+                            }
+                            else
+                            {
+                                    if (pos2.x + randObstacles[j].size >= pos1.x - randObstacles[i].size)
+                                    {
+                                        if (pos1.y < pos2.y)
+                                        {
+                                            if (pos1.y + randObstacles[i].size >= pos2.y - randObstacles[j].size)
+                                                draw = false;
+                                        }
+                                        else
+                                        {
+                                            if (pos2.y + randObstacles[j].size >= pos1.y - randObstacles[i].size)
+                                                draw = false;
+                                        }
+                                    }
+                                    drawItem[j] = draw;
+                                
+                            }
+
+                              
+                        }
+                    }
+                }
+
+            }
+
+            for (int i = 1; i < tTGA.width - 1; i++)
+            {
+                for (int j = 1; j < tTGA.height - 1; j++)
+                {
+                    for (int k = 0; k < howMany; k++)
+                    {
+                        if (randomPlaces[k] == i + j*tTGA.width)
+                        {
+                            if (drawItem[k])
+                            {
+                                Instantiate(randObstacles[k].gob, startPos + new Vector3Int(i, j)+new Vector3(0.5f, 0.5f,0), Quaternion.identity, tTGA.obstacleParent);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7738865605023025712}
   - component: {fileID: 5808710569112706304}
   - component: {fileID: 6876504886200808021}
+  - component: {fileID: 8578002467253194020}
+  - component: {fileID: 6931057855955764240}
   m_Layer: 0
   m_Name: bigTree
   m_TagString: Untagged
@@ -130,3 +132,53 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.46, y: 0.64}
   m_EdgeRadius: 0
+--- !u!58 &8578002467253194020
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5390160670731981333}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 2
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.92}
+  serializedVersion: 2
+  m_Radius: 0.7
+--- !u!114 &6931057855955764240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5390160670731981333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dab4142e086ddb42aaf5a0ecaaa1118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  changeColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Renderer: {fileID: 5808710569112706304}

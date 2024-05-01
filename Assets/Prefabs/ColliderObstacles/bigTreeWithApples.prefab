@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 80887466785155907}
   - component: {fileID: 4030192447553873537}
   - component: {fileID: 7455780900580701733}
+  - component: {fileID: 5308082086378264934}
+  - component: {fileID: 8333041256286773058}
   m_Layer: 0
   m_Name: bigTreeWithApples
   m_TagString: Untagged
@@ -130,3 +132,53 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.46, y: 0.64}
   m_EdgeRadius: 0
+--- !u!58 &5308082086378264934
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110431627883748051}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 2
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.92}
+  serializedVersion: 2
+  m_Radius: 0.7
+--- !u!114 &8333041256286773058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110431627883748051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dab4142e086ddb42aaf5a0ecaaa1118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  changeColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Renderer: {fileID: 4030192447553873537}
