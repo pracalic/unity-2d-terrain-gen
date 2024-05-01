@@ -167,21 +167,33 @@ public class TerrainTileGenerator : MonoBehaviour
 
     void GenerateSeaAround()
     {
-        int generationMultiplier = 4;
-        for (int i = 0; i < tTGA.width* generationMultiplier; i++)
-            for (int j = 0; j < tTGA.height* generationMultiplier; j++)
+        //int generationMultiplier = 4;
+        //for (int i = 0; i < tTGA.width* generationMultiplier; i++)
+        //    for (int j = 0; j < tTGA.height* generationMultiplier; j++)
+        //    {
+
+        //        Vector3Int start = startPos;
+        //        if (start == Vector3Int.zero)
+        //            start -= new Vector3Int(tTGA.width *generationMultiplier/ 2 - tTGA.width/2, tTGA.height * generationMultiplier/2 - tTGA.height/2);
+        //        else
+        //            start *= generationMultiplier;
+
+        //        Vector3Int to = start + new Vector3Int(i, j);
+        //        DrawTileOnTilemap(GetSeaTile(), tTGA.seaTileMap, to);
+        //    }
+
+        int howManyAdditiveTilesAround = 5;
+        for (int i = 0; i < tTGA.width +howManyAdditiveTilesAround*2; i++)
+            for (int j = 0; j < tTGA.height +howManyAdditiveTilesAround*2; j++)
             {
-                
                 Vector3Int start = startPos;
-                if (start == Vector3Int.zero)
-                    start -= new Vector3Int(tTGA.width *generationMultiplier/ 2 - tTGA.width/2, tTGA.height * generationMultiplier/2 - tTGA.height/2);
-                else
-                    start *= generationMultiplier;
+                start -= new Vector3Int(howManyAdditiveTilesAround, howManyAdditiveTilesAround);
 
                 Vector3Int to = start + new Vector3Int(i, j);
                 DrawTileOnTilemap(GetSeaTile(), tTGA.seaTileMap, to);
             }
-    }
+    
+}
 
     TileBase GetSeaTile()
     {

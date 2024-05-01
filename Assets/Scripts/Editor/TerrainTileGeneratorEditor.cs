@@ -31,13 +31,13 @@ public class TerrainTileGeneratorEditor : Editor
 
       //  myTarget.tileMap = EditorGUILayout.
         //EditorGUILayout.LabelField("Level", myTarget.sizeX.ToString());
-        if (GUILayout.Button("Generuj teren"))
+        if (GUILayout.Button("Generate terrain"))
         {
             //Debug.Log("Generuje teren");
             myTarget.DrawTerrain();
         }
 
-        if (GUILayout.Button("Usun teren"))
+        if (GUILayout.Button("Delete terrain"))
         {
             //Debug.Log("Generuje teren");
             myTarget.ClearTerrain();
